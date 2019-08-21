@@ -3,9 +3,9 @@ data "ibm_resource_group" "group" {
 }
 
 locals {
-  BASENAME = "vpctest"
-  ZONE1    = "us-south-1"
-  ZONE2    = "us-south-2"
+  BASENAME = "lonvpc"
+  ZONE1    = "eu-gb-1"
+  ZONE2    = "eu-gb-2"
 }
 
 resource ibm_is_vpc "vpc" {
@@ -34,7 +34,7 @@ resource "ibm_is_security_group_rule" "ingress_ssh_all" {
 resource "ibm_is_public_gateway" "gateway" {
   name = "${local.BASENAME}-vpc-gw"
   vpc  = "${ibm_is_vpc.vpc.id}"
-  zone = "us-south-1"
+  zone = "eu-gb-1"
 }
 
 resource ibm_is_subnet "subnet1" {

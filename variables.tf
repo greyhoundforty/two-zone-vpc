@@ -14,5 +14,5 @@ variable ibm_sl_api_key {
 }
 
 variable "ssh_key" {
-  default = "tycho-vpc"
+  default = "london-tycho"
 }
