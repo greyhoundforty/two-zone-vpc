@@ -2,8 +2,12 @@ data "ibm_resource_group" "group" {
   name = "CDE"
 }
 
+resource "random_id" "vpcrando" {
+  byte_length = 4
+}
+
 locals {
-  BASENAME = "rttf"
+  BASENAME = "${random_id.vpcrando.id}"
   ZONE1    = "us-south-1"
   ZONE2    = "us-south-2"
 }
