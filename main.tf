@@ -31,10 +31,16 @@ resource "ibm_is_security_group_rule" "ingress_ssh_all" {
   }
 }
 
-resource "ibm_is_public_gateway" "gateway" {
+resource "ibm_is_public_gateway" "zone1gateway" {
   name = "${local.BASENAME}-vpc-gw"
   vpc  = "${ibm_is_vpc.vpc.id}"
-  zone = "eu-gb-1"
+  zone = "${local.ZONE1}"
+}
+
+resource "ibm_is_public_gateway" "zone2gateway" {
+  name = "${local.BASENAME}-vpc-gw"
+  vpc  = "${ibm_is_vpc.vpc.id}"
+  zone = "${local.ZONE2}"
 }
 
 resource ibm_is_subnet "subnet1" {
@@ -42,6 +48,7 @@ resource ibm_is_subnet "subnet1" {
   vpc                      = "${ibm_is_vpc.vpc.id}"
   zone                     = "${local.ZONE1}"
   total_ipv4_address_count = 256
+  public_gateway = "${ibm_is_public_gateway.zone1gateway.id}"
 }
 
 resource ibm_is_subnet "subnet2" {
@@ -49,6 +56,7 @@ resource ibm_is_subnet "subnet2" {
   vpc                      = "${ibm_is_vpc.vpc.id}"
   zone                     = "${local.ZONE2}"
   total_ipv4_address_count = 256
+  public_gateway = "${ibm_is_public_gateway.zone2gateway.id}"
 }
 
 data ibm_is_image "ubuntu" {
@@ -65,7 +73,7 @@ resource ibm_is_instance "vsi1" {
   zone           = "${local.ZONE1}"
   keys           = ["${data.ibm_is_ssh_key.ssh_key_id.id}"]
   image          = "${data.ibm_is_image.ubuntu.id}"
-  profile        = "cc1-2x4"
+  profile        = "bc1-4x16"
   user_data      = "${file("install.yml")}"
   resource_group = "${data.ibm_resource_group.group.id}"
 
@@ -81,7 +89,7 @@ resource ibm_is_instance "vsi2" {
   zone           = "${local.ZONE2}"
   keys           = ["${data.ibm_is_ssh_key.ssh_key_id.id}"]
   image          = "${data.ibm_is_image.ubuntu.id}"
-  profile        = "cc1-2x4"
+  profile        = "bc1-4x16"
   user_data      = "${file("install.yml")}"
   resource_group = "${data.ibm_resource_group.group.id}"
 
