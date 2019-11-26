@@ -32,13 +32,13 @@ resource "ibm_is_security_group_rule" "ingress_ssh_all" {
 }
 
 resource "ibm_is_public_gateway" "zone1gateway" {
-  name = "${local.BASENAME}-vpc-gw"
+  name = "${local.BASENAME}-${local.ZONE1}-gw"
   vpc  = "${ibm_is_vpc.vpc.id}"
   zone = "${local.ZONE1}"
 }
 
 resource "ibm_is_public_gateway" "zone2gateway" {
-  name = "${local.BASENAME}-vpc-gw"
+  name = "${local.BASENAME}-${local.ZONE2}-gw"
   vpc  = "${ibm_is_vpc.vpc.id}"
   zone = "${local.ZONE2}"
 }
