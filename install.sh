@@ -1,9 +1,12 @@
 #!/bin/bash 
 
+update_system() {
 DEBIAN_FRONTEND=noninteractive apt-get update
 DEBIAN_FRONTEND=noninteractive apt-get upgrade -y
 DEBIAN_FRONTEND=noninteractive apt-get install unzip build-essential git curl -y
+}
 
+grab_consul() {
 CONSUL_VERSION="1.6.2"
 
 curl --silent --remote-name https://releases.hashicorp.com/consul/${CONSUL_VERSION}/consul_${CONSUL_VERSION}_linux_amd64.zip
@@ -17,7 +20,9 @@ mkdir --parents /etc/consul.d
 useradd --system --home /etc/consul.d --shell /bin/false consul
 mkdir --parents /opt/consul
 chown --recursive consul:consul /opt/consul
+}
 
+write_configs() {
 cat << EOF > /etc/systemd/system/consul.service
 [Unit]
 Description="HashiCorp Consul - A service mesh solution"
@@ -41,7 +46,7 @@ WantedBy=multi-user.target
 EOF
 
 
-cat << EOF > /etc/consul.d/consul.hcl
+cat << EOF > /root/consul.hcl
 datacenter = "vpc-consul"
 data_dir = "/opt/consul"
 encrypt = "SD5m2updmrGmb4Yv1E/dK22F2YBD7APKf+WRALNGgCU="
@@ -57,18 +62,26 @@ acl = {
 }
 EOF
 
-chown --recursive consul:consul /etc/consul.d
-chmod 640 /etc/consul.d/consul.hcl
-
-mkdir --parents /etc/consul.d
-chown --recursive consul:consul /etc/consul.d
-chmod 640 /etc/consul.d/server.hcl
-
-cat << EOF > /etc/consul.d/server.hcl
+cat << EOF > /root/server.hcl
 server = true
 bootstrap_expect = 3
 ui = true
 EOF
+}
 
+perms_fix() {
+mv /root/consul.hcl /etc/consul.d/consul.hcl
+mv /root/server.hcl /etc/consul.d/server.hcl
+chown --recursive consul:consul /etc/consul.d
+chmod 640 /etc/consul.d/consul.hcl
+chmod 640 /etc/consul.d/server.hcl
 systemctl enable consul
+}
 
+
+
+
+update_system
+grab_consul
+write_configs
+perms_fix
