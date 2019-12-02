@@ -13,6 +13,7 @@ chown root:root consul
 mv consul /usr/local/bin/
 consul -autocomplete-install
 
+mkdir --parents /etc/consul.d
 useradd --system --home /etc/consul.d --shell /bin/false consul
 mkdir --parents /opt/consul
 chown --recursive consul:consul /opt/consul
@@ -39,7 +40,7 @@ LimitNOFILE=65536
 WantedBy=multi-user.target
 EOF
 
-mkdir --parents /etc/consul.d
+
 cat << EOF > /etc/consul.d/consul.hcl
 datacenter = "vpc-consul"
 data_dir = "/opt/consul"
@@ -70,3 +71,4 @@ ui = true
 EOF
 
 systemctl enable consul
+

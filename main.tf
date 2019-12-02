@@ -168,3 +168,4 @@ resource ibm_is_floating_ip "fip2" {
   name   = "${local.BASENAME}-fip2"
   target = "${ibm_is_instance.vsi2.primary_network_interface.0.id}"
 }
+
