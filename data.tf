@@ -3,9 +3,10 @@ data "ibm_resource_group" "group" {
 }
 
 locals {
-  BASENAME = "eu-gb-vpc"
-  ZONE1    = "eu-gb-1"
-  ZONE2    = "eu-gb-2"
+  BASENAME = "${var.basename}"
+  ZONE1    = "${var.region}-1"
+  ZONE2    = "${var.region}-2"
+  ZONE3    = "${var.region}-3"
 }
 
 data ibm_is_image "ubuntu" {

@@ -25,19 +25,19 @@ resource "ibm_is_network_acl" "default_acl" {
 }
 
 resource "ibm_is_public_gateway" "zone1gateway" {
-  name = "${local.BASENAME}-${local.ZONE1}-gw"
+  name = "${local.BASENAME}-zone1-gw"
   vpc  = "${ibm_is_vpc.vpc.id}"
   zone = "${local.ZONE1}"
 }
 
 resource "ibm_is_public_gateway" "zone2gateway" {
-  name = "${local.BASENAME}-${local.ZONE2}-gw"
+  name = "${local.BASENAME}-zone2-gw"
   vpc  = "${ibm_is_vpc.vpc.id}"
   zone = "${local.ZONE2}"
 }
 
 resource ibm_is_subnet "subnet1" {
-  name                     = "${local.BASENAME}-subnet1"
+  name                     = "${local.BASENAME}-zone1-subnet"
   vpc                      = "${ibm_is_vpc.vpc.id}"
   zone                     = "${local.ZONE1}"
   total_ipv4_address_count = 256
@@ -46,7 +46,7 @@ resource ibm_is_subnet "subnet1" {
 }
 
 resource ibm_is_subnet "subnet2" {
-  name                     = "${local.BASENAME}-subnet2"
+  name                     = "${local.BASENAME}-zone2-subnet"
   vpc                      = "${ibm_is_vpc.vpc.id}"
   zone                     = "${local.ZONE2}"
   total_ipv4_address_count = 256
