@@ -32,12 +32,12 @@ resource ibm_is_subnet "subnet2" {
 }
 
 resource ibm_is_instance "vsi1" {
-  name           = "${local.BASENAME}-vsi1"
+  name           = "${local.BASENAME}-zone1-vsi"
   vpc            = "${ibm_is_vpc.vpc.id}"
   zone           = "${local.ZONE1}"
   keys           = ["${data.ibm_is_ssh_key.ssh_key_id.id}"]
   image          = "${data.ibm_is_image.ubuntu.id}"
-  profile        = "bc1-4x16"
+  profile        = "bc1-8x32"
   user_data      = "${file("install.sh")}"
   resource_group = "${data.ibm_resource_group.group.id}"
 
@@ -49,12 +49,12 @@ resource ibm_is_instance "vsi1" {
 }
 
 resource ibm_is_instance "vsi2" {
-  name           = "${local.BASENAME}-vsi2"
+  name           = "${local.BASENAME}-zone2-vsi"
   vpc            = "${ibm_is_vpc.vpc.id}"
   zone           = "${local.ZONE2}"
   keys           = ["${data.ibm_is_ssh_key.ssh_key_id.id}"]
   image          = "${data.ibm_is_image.ubuntu.id}"
-  profile        = "bc1-4x16"
+  profile        = "bc1-8x32"
   user_data      = "${file("install.sh")}"
   resource_group = "${data.ibm_resource_group.group.id}"
 

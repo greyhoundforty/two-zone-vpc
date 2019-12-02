@@ -5,7 +5,7 @@ variable "region" {
 
 variable "ssh_key" {
   type    = "string"
-  default = ""
+  default = "ryan-tycho-us-south"
 }
 
 variable "basename" {
