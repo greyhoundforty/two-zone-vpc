@@ -3,7 +3,7 @@ data "ibm_resource_group" "group" {
 }
 
 locals {
-  BASENAME = "lonvpc"
+  BASENAME = "eu-gb-vpc"
   ZONE1    = "eu-gb-1"
   ZONE2    = "eu-gb-2"
 }
