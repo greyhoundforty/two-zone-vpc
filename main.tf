@@ -10,7 +10,6 @@ resource "ibm_is_network_acl" "default_acl" {
     {
       name        = "outbound"
       action      = "allow"
-      protocol    = "all"
       source      = "0.0.0.0/0"
       destination = "0.0.0.0/0"
       direction   = "outbound"
@@ -18,7 +17,6 @@ resource "ibm_is_network_acl" "default_acl" {
     {
       name        = "inbound"
       action      = "allow"
-      protocol    = "all"
       source      = "0.0.0.0/0"
       destination = "0.0.0.0/0"
       direction   = "inbound"
