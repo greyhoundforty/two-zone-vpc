@@ -3,27 +3,6 @@ resource ibm_is_vpc "vpc" {
   resource_group = "${data.ibm_resource_group.group.id}"
 }
 
-resource "ibm_is_network_acl" "default_acl" {
-  name = "${local.BASENAME}-acl"
-
-  rules = [
-    {
-      name        = "outbound"
-      action      = "allow"
-      source      = "0.0.0.0/0"
-      destination = "0.0.0.0/0"
-      direction   = "outbound"
-    },
-    {
-      name        = "inbound"
-      action      = "allow"
-      source      = "0.0.0.0/0"
-      destination = "0.0.0.0/0"
-      direction   = "inbound"
-    },
-  ]
-}
-
 resource "ibm_is_public_gateway" "zone1gateway" {
   name = "${local.BASENAME}-zone1-gw"
   vpc  = "${ibm_is_vpc.vpc.id}"
@@ -42,7 +21,6 @@ resource ibm_is_subnet "subnet1" {
   zone                     = "${local.ZONE1}"
   total_ipv4_address_count = 256
   public_gateway           = "${ibm_is_public_gateway.zone1gateway.id}"
-  network_acl              = "${ibm_is_network_acl.default_acl.id}"
 }
 
 resource ibm_is_subnet "subnet2" {
@@ -51,7 +29,6 @@ resource ibm_is_subnet "subnet2" {
   zone                     = "${local.ZONE2}"
   total_ipv4_address_count = 256
   public_gateway           = "${ibm_is_public_gateway.zone2gateway.id}"
-  network_acl              = "${ibm_is_network_acl.default_acl.id}"
 }
 
 resource ibm_is_instance "vsi1" {
