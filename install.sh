@@ -49,7 +49,7 @@ EOF
 cat << EOF > /root/consul.hcl
 datacenter = "vpc-consul"
 data_dir = "/opt/consul"
-encrypt = "SD5m2updmrGmb4Yv1E/dK22F2YBD7APKf+WRALNGgCU="
+encrypt = "ENCRYPT_KEY"
 bind_addr = "BINDIP"
 node_name = "$(hostname -s)"
 acl = {
@@ -57,7 +57,7 @@ acl = {
     default_policy = "allow",
     enable_token_persistence = true
     tokens = {
-      "master" =  "c4f6eff8cb457a9bb36a5e3504a5b8d4"
+      "master" =  "ACL_TOKEN"
     }
 }
 EOF
