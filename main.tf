@@ -3,100 +3,27 @@ resource ibm_is_vpc "vpc" {
   resource_group = "${data.ibm_resource_group.group.id}"
 }
 
-resource ibm_is_security_group "sg1" {
-  name           = "${local.BASENAME}-sg1"
-  vpc            = "${ibm_is_vpc.vpc.id}"
-  resource_group = "${data.ibm_resource_group.group.id}"
-}
+resource "ibm_is_network_acl" "default_acl" {
+  name = "${local.BASENAME}-acl"
 
-resource ibm_is_security_group "consul" {
-  name           = "${local.BASENAME}-consul-sg"
-  vpc            = "${ibm_is_vpc.vpc.id}"
-  resource_group = "${data.ibm_resource_group.group.id}"
-}
-
-# allow all incoming network traffic on port 22
-resource "ibm_is_security_group_rule" "ingress_ssh_all" {
-  group     = "${ibm_is_security_group.sg1.id}"
-  direction = "inbound"
-  remote    = "0.0.0.0/0"
-
-  tcp = {
-    port_min = 22
-    port_max = 22
-  }
-}
-
-resource "ibm_is_security_group_rule" "consul_in_tcp" {
-  group     = "${ibm_is_security_group.consul.id}"
-  direction = "inbound"
-  remote    = "0.0.0.0/0"
-
-  tcp = {
-    port_min = 8300
-    port_max = 8302
-  }
-}
-
-resource "ibm_is_security_group_rule" "consul_in_udp" {
-  group     = "${ibm_is_security_group.consul.id}"
-  direction = "inbound"
-  remote    = "0.0.0.0/0"
-
-  udp = {
-    port_min = 8301
-    port_max = 8302
-  }
-}
-
-resource "ibm_is_security_group_rule" "consul_out_udp" {
-  group     = "${ibm_is_security_group.consul.id}"
-  direction = "outbound"
-  remote    = "0.0.0.0/0"
-
-  udp = {
-    port_min = 8301
-    port_max = 8302
-  }
-}
-
-resource "ibm_is_security_group_rule" "servers_outbound" {
-  group     = "${ibm_is_security_group.consul.id}"
-  direction = "outbound"
-  remote    = "0.0.0.0/0"
-}
-
-resource "ibm_is_security_group_rule" "consul_out_http" {
-  group     = "${ibm_is_security_group.consul.id}"
-  direction = "outbound"
-  remote    = "0.0.0.0/0"
-
-  tcp = {
-    port_min = 8500
-    port_max = 8500
-  }
-}
-
-resource "ibm_is_security_group_rule" "consul_in_http" {
-  group     = "${ibm_is_security_group.consul.id}"
-  direction = "inbound"
-  remote    = "0.0.0.0/0"
-
-  tcp = {
-    port_min = 8500
-    port_max = 8500
-  }
-}
-
-resource "ibm_is_security_group_rule" "consul_out_tcp" {
-  group     = "${ibm_is_security_group.consul.id}"
-  direction = "outbound"
-  remote    = "0.0.0.0/0"
-
-  tcp = {
-    port_min = 8300
-    port_max = 8302
-  }
+  rules = [
+    {
+      name        = "outbound"
+      action      = "allow"
+      protocol    = "all"
+      source      = "0.0.0.0/0"
+      destination = "0.0.0.0/0"
+      direction   = "outbound"
+    },
+    {
+      name        = "inbound"
+      action      = "allow"
+      protocol    = "all"
+      source      = "0.0.0.0/0"
+      destination = "0.0.0.0/0"
+      direction   = "inbound"
+    },
+  ]
 }
 
 resource "ibm_is_public_gateway" "zone1gateway" {
@@ -117,6 +44,7 @@ resource ibm_is_subnet "subnet1" {
   zone                     = "${local.ZONE1}"
   total_ipv4_address_count = 256
   public_gateway           = "${ibm_is_public_gateway.zone1gateway.id}"
+  network_acl              = "${ibm_is_network_acl.default_acl.id}"
 }
 
 resource ibm_is_subnet "subnet2" {
@@ -125,6 +53,7 @@ resource ibm_is_subnet "subnet2" {
   zone                     = "${local.ZONE2}"
   total_ipv4_address_count = 256
   public_gateway           = "${ibm_is_public_gateway.zone2gateway.id}"
+  network_acl              = "${ibm_is_network_acl.default_acl.id}"
 }
 
 resource ibm_is_instance "vsi1" {
@@ -138,8 +67,9 @@ resource ibm_is_instance "vsi1" {
   resource_group = "${data.ibm_resource_group.group.id}"
 
   primary_network_interface = {
-    subnet          = "${ibm_is_subnet.subnet1.id}"
-    security_groups = ["${ibm_is_security_group.sg1.id}", "${ibm_is_security_group.consul.id}"]
+    subnet = "${ibm_is_subnet.subnet1.id}"
+
+    # security_groups = ["${ibm_is_security_group.sg1.id}", "${ibm_is_security_group.consul.id}"]
   }
 }
 
@@ -154,8 +84,9 @@ resource ibm_is_instance "vsi2" {
   resource_group = "${data.ibm_resource_group.group.id}"
 
   primary_network_interface = {
-    subnet          = "${ibm_is_subnet.subnet2.id}"
-    security_groups = ["${ibm_is_security_group.sg1.id}", "${ibm_is_security_group.consul.id}"]
+    subnet = "${ibm_is_subnet.subnet2.id}"
+
+    # security_groups = ["${ibm_is_security_group.sg1.id}", "${ibm_is_security_group.consul.id}"]
   }
 }
 
