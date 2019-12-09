@@ -1,6 +1,6 @@
 variable "region" {
   type    = "string"
-  default = ""
+  default = "us-south"
 }
 
 variable "ssh_key" {
@@ -10,5 +10,5 @@ variable "ssh_key" {
 
 variable "basename" {
   type    = "string"
-  default = ""
+  default = "vpc-rt"
 }
